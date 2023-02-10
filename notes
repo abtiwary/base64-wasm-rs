@@ -1,0 +1,11 @@
+# install wasm-pack
+cargo install -f wasm-pack
+
+# start a new wasm-pack project
+wasm-pack new base64-wasm-rs
+
+# build a wasm-pack project
+wasm-pack build --target web
+
+# start a temporary dev server if python3 is installed
+python3 -m http.server

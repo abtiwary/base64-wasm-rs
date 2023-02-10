@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="utf-8" />
+    <title>hello-wasm example</title>
+</head>
+
+<body>
+    <script type="module">
+        import init, { string_to_base64, base64_to_string } from "./pkg/base64_wasm_rs.js";
+        init().then(() => {
+            console.log(string_to_base64("light work."));
+            console.log(base64_to_string("bGlnaHQgd29yaw=="));
+        });
+    </script>
+</body>
+
+</html>
