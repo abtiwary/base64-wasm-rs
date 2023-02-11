@@ -2,17 +2,110 @@
 <html lang="en-US">
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>hello-wasm example</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+    <style type="text/css">
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow-y: hidden;
+        }
+
+        .centered-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            height: 100vh;
+            column-gap: 10px;
+        }
+
+    </style>
+
+<script>
+    var fn_string_to_base64 = null;
+    var fn_base64_to_string = null;
+    var mode = "Encode";
+</script>
 </head>
 
 <body>
     <script type="module">
         import init, { string_to_base64, base64_to_string } from "./pkg/base64_wasm_rs.js";
         init().then(() => {
-            console.log(string_to_base64("light work."));
-            console.log(base64_to_string("bGlnaHQgd29yaw=="));
+            //console.log(string_to_base64("light work."));
+            //console.log(base64_to_string("bGlnaHQgd29yaw=="));
+            fn_string_to_base64 = string_to_base64;
+            fn_base64_to_string = base64_to_string;
         });
     </script>
+
+    <div class="centered-container" id="centered-container">
+        <div style="display: flex; flex-direction: row; justify-content: center; align-items: center;">
+            <div class="dropdown">
+                <button id="dropdown_btn" class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Select mode
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#" onclick="updateModeText('Encode')">Encode</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="updateModeText('Decode')">Decode</a></li>
+                </ul>
+            </div>
+            &nbsp; &nbsp;
+            <div id="selected_mode"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </div>
+        </div>
+
+        <div class="input-group mb-3" style="max-width: 400px;">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">Input</span>
+            </div>
+            <input id="input_text" type="text" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
+        </div>
+
+        <div class="input-group mb-3" style="max-width: 400px;">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon2">Output</span>
+            </div>
+            <input id="output_text" type="text" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
+        </div>
+
+        <div class="input-group mb-3" style="max-width: 400px;">
+            <button type="button" class="btn btn-primary" onclick="getResult()">Go</button>
+        </div>
+
+        
+    </div> <!-- centered container -->
+
+
+    <script>
+        const updateModeText = (new_mode) => {
+            document.getElementById('selected_mode').innerHTML = new_mode;
+            mode = new_mode;
+        };
+
+        const getResult = () => {
+            let input = document.getElementById('input_text').value;
+            let fn = null;
+            console.log(mode);
+            switch(mode) {
+                case "Encode": 
+                    fn = fn_string_to_base64;
+                    break;
+                case "Decode": 
+                    fn = fn_base64_to_string;
+                    break;
+                default: break;
+            }
+
+            document.getElementById('output_text').value = fn(input);
+        };
+    </script>
+
 </body>
 
 </html>
